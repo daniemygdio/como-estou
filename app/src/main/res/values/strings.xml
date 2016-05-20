@@ -1,0 +1,13 @@
+<resources>
+
+    <string name="app_name">Como estou</string>
+    <string name="act_principal_titulo">Como estou?</string>
+    <string name="msg_agradecimento">Obrigado! Até amanhã!"</string>
+    <string name="tvOtimo">Ótimo</string>
+    <string name="tvBom">Bom</string>
+    <string name="tvRegular">Regular</string>
+    <string name="tvRuim">Ruim</string>
+    <string name="tvPessimo">Péssimo</string>
+    <string name="act_principal_titulo2" />
+    <string name="act_titulo">Como você está hoje?</string>
+</resources>
