@@ -24,7 +24,7 @@ import br.com.comoestou.ed.bd.Controlador;
  */
 public class ActPrincipal extends Activity {
     private ImageButton ibMuitoSatisfeito, ibSatisfeito, ibNeutro, ibInsatisfeito, ibMuitoInsatisfeito;
-    
+
     private static final int MUITO_SATISFEITO = 1;
     private static final int SATISFEITO = 2;
     private static final int NEUTRO = 3;
@@ -97,6 +97,7 @@ public class ActPrincipal extends Activity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 12);
             /* 12 é uma constante qualquer */
         }
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -113,9 +114,24 @@ public class ActPrincipal extends Activity {
                 avaliacao.setLongitude(localizacao.getLongitude());
             }
         }
+
         controlador.inserir(avaliacao);
 
         Toast.makeText(this, getString(R.string.msg_agradecimento), Toast.LENGTH_SHORT).show();
+        desabilitarBotoes();
+    }
+
+    public void desabilitarBotoes() {
+        ibMuitoSatisfeito.setEnabled(false);
+        ibMuitoSatisfeito.setClickable(false);
+        ibSatisfeito.setEnabled(false);
+        ibSatisfeito.setClickable(false);
+        ibNeutro.setEnabled(false);
+        ibNeutro.setClickable(false);
+        ibInsatisfeito.setEnabled(false);
+        ibInsatisfeito.setClickable(false);
+        ibMuitoInsatisfeito.setEnabled(false);
+        ibMuitoInsatisfeito.setClickable(false);
     }
 
     public void btAbrirActAvaliacao(View v) {
