@@ -1,4 +1,4 @@
-package br.com.comoestou.ed.activity;
+package br.com.comoestou.ed.main;
 
 import android.app.Activity;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package br.com.comoestou.ed.activity;
+package br.com.comoestou.ed.main;
 
 import android.Manifest;
 import android.app.Activity;
@@ -13,11 +13,13 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import br.com.comoestou.ed.R;
 import br.com.comoestou.ed.bd.Avaliacao;
 import br.com.comoestou.ed.bd.Controlador;
+import br.com.comoestou.ed.service.UploadAvaliacao;
 
 /**
  * Created by Thiago on 18/05/2016.
@@ -80,6 +82,24 @@ public class ActPrincipal extends Activity {
                 return true;
             }
         });
+
+        inserirTeste(10);
+    }
+
+    /* Apenas para testar, adiciona quant registros com data dos últimos quant dias */
+    private void inserirTeste(int quant) {
+        Controlador controlador = new Controlador(getBaseContext());
+        Avaliacao avaliacao = new Avaliacao();
+        Calendar cal;
+        for (int i = 1; i <= quant; i++) {
+            cal = Calendar. getInstance();
+            cal.add(Calendar. DATE, -1 * i);
+            avaliacao.setDataAvaliacao(new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime()));
+            avaliacao.setHorario(new SimpleDateFormat("HH:mm:ss").format(cal.getTime()));
+            avaliacao.setAvaliacao( (int)(Math. random() * 5) + 1 );
+            avaliacao.setEnviado( (int)(Math. random() * 2) );
+            controlador.inserir(avaliacao);
+        }
     }
 
     public void salvarAvaliacao(int avaliacaoEscolhida) {
@@ -119,6 +139,10 @@ public class ActPrincipal extends Activity {
 
         Toast.makeText(this, getString(R.string.msg_agradecimento), Toast.LENGTH_SHORT).show();
         desabilitarBotoes();
+
+        /* Dispara o serviço para fazer o upload das avaliações */
+        Intent intencao = new Intent(this, UploadAvaliacao. class);
+        startService(intencao);
     }
 
     public void desabilitarBotoes() {

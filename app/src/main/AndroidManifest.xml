@@ -3,6 +3,12 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- Permissão necessária para obter o IMEI -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- Permissão para obter o estado da rede -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Permite a aplicação abrir sockets de rede -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,14 +18,32 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activity.ActPrincipal"
+            android:name=".main.ActPrincipal"
             android:label="@string/act_principal_titulo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ActAvaliacao" />
+        <activity android:name=".main.ActAvaliacao" />
+
+        <!-- A classe UploadAvaliacao é do tipo IntentService e
+        as classes IntentService precisam de uma marcação <service>.
+         A propriedade android:exported = "false" indica que este
+         serviço está disponível apenas para este aplicativo -->
+        <service
+            android:name=".service.UploadAvaliacao"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!-- É necessário registrar um recebedor de broadcast no AndroidManifest para
+        escutar (listen) as mudanças disparadas pelo dispositivo -->
+        <receiver android:name=".service.Despertador">
+            <intent-filter>
+                <!-- Este filtro define que a ação CONNECTIVITY_ACTION irá invocar o serviço Despertador -->
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
