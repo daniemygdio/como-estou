@@ -10,4 +10,6 @@
     <string name="tvPessimo">Péssimo</string>
     <string name="act_principal_titulo2" />
     <string name="act_titulo">Como você está hoje?</string>
+    <string name="alerta_para_selecionar_avaliacao">Pressione e segure sua avaliação!</string>
+    <string name="alerta_ja_selecionou_hoje">Obrigado! Te aguardamos amanhã!</string>
 </resources>

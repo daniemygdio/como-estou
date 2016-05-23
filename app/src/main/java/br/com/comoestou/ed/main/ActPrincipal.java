@@ -10,8 +10,11 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,7 +28,8 @@ import br.com.comoestou.ed.service.UploadAvaliacao;
  * Created by Thiago on 18/05/2016.
  */
 public class ActPrincipal extends Activity {
-    private ImageButton ibMuitoSatisfeito, ibSatisfeito, ibNeutro, ibInsatisfeito, ibMuitoInsatisfeito;
+    private static ImageButton ibMuitoSatisfeito, ibSatisfeito, ibNeutro, ibInsatisfeito, ibMuitoInsatisfeito;
+    private static TextView tvAlerta;
 
     private static final int MUITO_SATISFEITO = 1;
     private static final int SATISFEITO = 2;
@@ -37,12 +41,18 @@ public class ActPrincipal extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_principal);
+        jaRepondeuHoje();
+        inicializarBotoes();
+        inserirTeste(10);
+    }
 
-        ibMuitoSatisfeito = (ImageButton) findViewById(R.id.ibMuitoInsatisfeito);
+    private void inicializarBotoes() {
+        ibMuitoSatisfeito = (ImageButton) findViewById(R.id.ibMuitoSatisfeito);
         ibSatisfeito = (ImageButton) findViewById(R.id.ibSatisfeito);
         ibNeutro = (ImageButton) findViewById(R.id.ibNeutro);
         ibInsatisfeito = (ImageButton) findViewById(R.id.ibInsatisfeito);
         ibMuitoInsatisfeito = (ImageButton) findViewById(R.id.ibMuitoInsatisfeito);
+        tvAlerta = (TextView) findViewById(R.id.tvAlerta);
 
         ibMuitoSatisfeito.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -83,7 +93,33 @@ public class ActPrincipal extends Activity {
             }
         });
 
-        inserirTeste(10);
+        if(jaRepondeuHoje()) {
+           desabilitarBotoes();
+        }
+    }
+
+    /***
+     * Retorna verdadeiro caso haja uma entrada no banco de dados de avaliação na data atual (hoje).
+     * @return true - caso já tenha avaliação do dia atual (hoje).
+     */
+    private boolean jaRepondeuHoje() {
+        Controlador controlador = new Controlador(getBaseContext());
+        Avaliacao avaliacao = controlador.selecionarUltimaAvaliacao();
+        if(avaliacao != null) {
+            // Recebe última data salva no banco
+            String dataAvaliacao = avaliacao.getDataAvaliacao();
+
+            // Recebe a data atual e coloca na string formatada
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            String dataFormatada = df.format(c.getTime());
+
+            if(dataAvaliacao.equals(dataFormatada)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /* Apenas para testar, adiciona quant registros com data dos últimos quant dias */
@@ -156,6 +192,7 @@ public class ActPrincipal extends Activity {
         ibInsatisfeito.setClickable(false);
         ibMuitoInsatisfeito.setEnabled(false);
         ibMuitoInsatisfeito.setClickable(false);
+        tvAlerta.setText(getResources().getString(R.string.alerta_ja_selecionou_hoje));
     }
 
     public void btAbrirActAvaliacao(View v) {
