@@ -43,7 +43,7 @@ public class ActPrincipal extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_principal);
-        jaRepondeuHoje();
+
         inicializarBotoes();
         inserirTeste(10);
     }
@@ -122,9 +122,11 @@ public class ActPrincipal extends Activity {
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
             String dataFormatada = df.format(c.getTime());
 
-            if(dataAvaliacao.equals(dataFormatada)) {
-                avaliacaoDeHoje = avaliacao.getAvaliacao();
-                return true;
+            if(dataAvaliacao != null && dataFormatada != null) {
+                if(dataAvaliacao.equals(dataFormatada)) {
+                    avaliacaoDeHoje = avaliacao.getAvaliacao();
+                    return true;
+                }
             }
         }
 
@@ -193,36 +195,46 @@ public class ActPrincipal extends Activity {
     public void desabilitarBotoes(int avaliacaoEscolhida) {
         ibMuitoSatisfeito.setEnabled(false);
         ibMuitoSatisfeito.setClickable(false);
+        ibMuitoSatisfeito.setImageResource(R.drawable.cinza_otimo);
         tvMuitoSatisfeito.setTextColor(ContextCompat.getColor(this, R.color.desabilitado));
         ibSatisfeito.setEnabled(false);
         ibSatisfeito.setClickable(false);
+        ibSatisfeito.setImageResource(R.drawable.cinza_bom);
         tvSatisfeito.setTextColor(ContextCompat.getColor(this, R.color.desabilitado));
         ibNeutro.setEnabled(false);
         ibNeutro.setClickable(false);
+        ibNeutro.setImageResource(R.drawable.cinza_regular);
         tvNeutro.setTextColor(ContextCompat.getColor(this, R.color.desabilitado));
         ibInsatisfeito.setEnabled(false);
         ibInsatisfeito.setClickable(false);
+        ibInsatisfeito.setImageResource(R.drawable.cinza_ruim);
         tvInsatisfeito.setTextColor(ContextCompat.getColor(this, R.color.desabilitado));
         ibMuitoInsatisfeito.setEnabled(false);
         ibMuitoInsatisfeito.setClickable(false);
+        ibMuitoInsatisfeito.setImageResource(R.drawable.cinza_pessimo);
         tvMuitoInsatisfeito.setTextColor(ContextCompat.getColor(this, R.color.desabilitado));
         tvAlerta.setText(getResources().getString(R.string.alerta_ja_selecionou_hoje));
 
         switch (avaliacaoEscolhida) {
             case MUITO_SATISFEITO:
                 tvMuitoSatisfeito.setTextColor(ContextCompat.getColor(this, R.color.mainBackground));
+                ibMuitoSatisfeito.setImageResource(R.drawable.otimo);
                 break;
             case SATISFEITO:
                 tvSatisfeito.setTextColor(ContextCompat.getColor(this, R.color.green));
+                ibSatisfeito.setImageResource(R.drawable.bom);
                 break;
             case NEUTRO:
                 tvNeutro.setTextColor(ContextCompat.getColor(this, R.color.yellow));
+                ibNeutro.setImageResource(R.drawable.regular);
                 break;
             case INSATISFEITO:
                 tvInsatisfeito.setTextColor(ContextCompat.getColor(this, R.color.orange));
+                ibInsatisfeito.setImageResource(R.drawable.ruim);
                 break;
             case MUITO_INSATISFEITO:
                 tvMuitoInsatisfeito.setTextColor(ContextCompat.getColor(this, R.color.red));
+                ibMuitoInsatisfeito.setImageResource(R.drawable.pessimo);
                 break;
             case 0:
                 break;

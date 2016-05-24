@@ -65,20 +65,23 @@ public class Controlador {
         Avaliacao ultimaAvaliacao = new Avaliacao();
 
         Cursor cursor;
-        bd = banco.getReadableDatabase();
-        cursor = bd.rawQuery("select * from tbAvaliacao order by dataAvaliacao desc", null);
 
-        if(cursor != null) {
-            cursor.moveToFirst();
-            ultimaAvaliacao.setDataAvaliacao(cursor.getString(0));
-            ultimaAvaliacao.setHorario(cursor.getString(1));
-            ultimaAvaliacao.setAvaliacao(cursor.getInt(2));
-            ultimaAvaliacao.setEnviado(cursor.getInt(3));
-            ultimaAvaliacao.setLatitude(!cursor.isNull(4) ? cursor.getDouble(4) : null);
-            ultimaAvaliacao.setLongitude(!cursor.isNull(5) ? cursor.getDouble(5) : null);
+        bd = banco.getReadableDatabase();
+        if (bd != null) {
+            cursor = bd.rawQuery("select * from tbAvaliacao order by dataAvaliacao desc", null);
+
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                ultimaAvaliacao.setDataAvaliacao(cursor.getString(0));
+                ultimaAvaliacao.setHorario(cursor.getString(1));
+                ultimaAvaliacao.setAvaliacao(cursor.getInt(2));
+                ultimaAvaliacao.setEnviado(cursor.getInt(3));
+                ultimaAvaliacao.setLatitude(!cursor.isNull(4) ? cursor.getDouble(4) : null);
+                ultimaAvaliacao.setLongitude(!cursor.isNull(5) ? cursor.getDouble(5) : null);
+            }
+            cursor.close();
         }
 
-        cursor.close();
         return ultimaAvaliacao;
     }
 
@@ -105,26 +108,31 @@ public class Controlador {
         String saida = "";
         Avaliacao avaliacao;
         Cursor cursor;
+
         /* Obtém uma conexão para leitura */
         bd = banco.getReadableDatabase();
-        cursor = bd.rawQuery(
-                "select * from tbAvaliacao where enviado = 0 order by dataAvaliacao asc", null);
-        if (cursor != null) {
-            cursor.moveToFirst();
+        if (bd != null) {
+            cursor = bd.rawQuery(
+                    "select * from tbAvaliacao where enviado = 0 order by dataAvaliacao asc", null);
+
+
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
             /* Verifica se chegou ao fim */
-            while (!cursor.isAfterLast()) {
-                avaliacao = new Avaliacao();
-                avaliacao.setDataAvaliacao(cursor.getString(0));
-                avaliacao.setHorario(cursor.getString(1));
-                avaliacao.setAvaliacao(cursor.getInt(2));
-                avaliacao.setEnviado(cursor.getInt(3));
-                avaliacao.setLatitude(!cursor.isNull(4) ? cursor.getDouble(4) : null);
-                avaliacao.setLongitude(!cursor.isNull(5) ? cursor.getDouble(5) : null);
+                while (!cursor.isAfterLast()) {
+                    avaliacao = new Avaliacao();
+                    avaliacao.setDataAvaliacao(cursor.getString(0));
+                    avaliacao.setHorario(cursor.getString(1));
+                    avaliacao.setAvaliacao(cursor.getInt(2));
+                    avaliacao.setEnviado(cursor.getInt(3));
+                    avaliacao.setLatitude(!cursor.isNull(4) ? cursor.getDouble(4) : null);
+                    avaliacao.setLongitude(!cursor.isNull(5) ? cursor.getDouble(5) : null);
                 /* Concatena os registros na variável saida usando ponto e vírgula para separá-los */
-                saida += saida.equals("") ? avaliacao : ";" + avaliacao;
-                cursor.moveToNext();
+                    saida += saida.equals("") ? avaliacao : ";" + avaliacao;
+                    cursor.moveToNext();
+                }
+                cursor.close();
             }
-            cursor.close();
         }
         bd.close();
         return saida;
