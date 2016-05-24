@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -29,7 +30,8 @@ import br.com.comoestou.ed.service.UploadAvaliacao;
  */
 public class ActPrincipal extends Activity {
     private static ImageButton ibMuitoSatisfeito, ibSatisfeito, ibNeutro, ibInsatisfeito, ibMuitoInsatisfeito;
-    private static TextView tvAlerta;
+    private static TextView tvAlerta, tvMuitoSatisfeito, tvSatisfeito, tvNeutro, tvInsatisfeito, tvMuitoInsatisfeito;
+    private int avaliacaoDeHoje = 0;
 
     private static final int MUITO_SATISFEITO = 1;
     private static final int SATISFEITO = 2;
@@ -53,6 +55,11 @@ public class ActPrincipal extends Activity {
         ibInsatisfeito = (ImageButton) findViewById(R.id.ibInsatisfeito);
         ibMuitoInsatisfeito = (ImageButton) findViewById(R.id.ibMuitoInsatisfeito);
         tvAlerta = (TextView) findViewById(R.id.tvAlerta);
+        tvMuitoSatisfeito = (TextView) findViewById(R.id.tvMuitoSatisfeito);
+        tvSatisfeito = (TextView) findViewById(R.id.tvSatisfeito);
+        tvNeutro = (TextView) findViewById(R.id.tvNeutro);
+        tvInsatisfeito = (TextView) findViewById(R.id.tvInsatisfeito);
+        tvMuitoInsatisfeito = (TextView) findViewById(R.id.tvMuitoInsatisfeito);
 
         ibMuitoSatisfeito.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -95,7 +102,7 @@ public class ActPrincipal extends Activity {
         });
 
         if(jaRepondeuHoje()) {
-           desabilitarBotoes();
+            desabilitarBotoes(avaliacaoDeHoje);
         }
     }
 
@@ -116,6 +123,7 @@ public class ActPrincipal extends Activity {
             String dataFormatada = df.format(c.getTime());
 
             if(dataAvaliacao.equals(dataFormatada)) {
+                avaliacaoDeHoje = avaliacao.getAvaliacao();
                 return true;
             }
         }
@@ -175,25 +183,50 @@ public class ActPrincipal extends Activity {
         controlador.inserir(avaliacao);
 
         Toast.makeText(this, getString(R.string.msg_agradecimento), Toast.LENGTH_SHORT).show();
-        desabilitarBotoes();
+        desabilitarBotoes(avaliacaoEscolhida);
 
         /* Dispara o serviço para fazer o upload das avaliações */
         Intent intencao = new Intent(this, UploadAvaliacao. class);
         startService(intencao);
     }
 
-    public void desabilitarBotoes() {
+    public void desabilitarBotoes(int avaliacaoEscolhida) {
         ibMuitoSatisfeito.setEnabled(false);
         ibMuitoSatisfeito.setClickable(false);
+        tvMuitoSatisfeito.setTextColor(ContextCompat.getColor(this, R.color.desabilitado));
         ibSatisfeito.setEnabled(false);
         ibSatisfeito.setClickable(false);
+        tvSatisfeito.setTextColor(ContextCompat.getColor(this, R.color.desabilitado));
         ibNeutro.setEnabled(false);
         ibNeutro.setClickable(false);
+        tvNeutro.setTextColor(ContextCompat.getColor(this, R.color.desabilitado));
         ibInsatisfeito.setEnabled(false);
         ibInsatisfeito.setClickable(false);
+        tvInsatisfeito.setTextColor(ContextCompat.getColor(this, R.color.desabilitado));
         ibMuitoInsatisfeito.setEnabled(false);
         ibMuitoInsatisfeito.setClickable(false);
+        tvMuitoInsatisfeito.setTextColor(ContextCompat.getColor(this, R.color.desabilitado));
         tvAlerta.setText(getResources().getString(R.string.alerta_ja_selecionou_hoje));
+
+        switch (avaliacaoEscolhida) {
+            case MUITO_SATISFEITO:
+                tvMuitoSatisfeito.setTextColor(ContextCompat.getColor(this, R.color.mainBackground));
+                break;
+            case SATISFEITO:
+                tvSatisfeito.setTextColor(ContextCompat.getColor(this, R.color.green));
+                break;
+            case NEUTRO:
+                tvNeutro.setTextColor(ContextCompat.getColor(this, R.color.yellow));
+                break;
+            case INSATISFEITO:
+                tvInsatisfeito.setTextColor(ContextCompat.getColor(this, R.color.orange));
+                break;
+            case MUITO_INSATISFEITO:
+                tvMuitoInsatisfeito.setTextColor(ContextCompat.getColor(this, R.color.red));
+                break;
+            case 0:
+                break;
+        }
     }
 
     public void btAbrirActAvaliacao(View v) {
