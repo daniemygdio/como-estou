@@ -29,16 +29,22 @@ import br.com.comoestou.ed.bd.Controlador;
  */
 public class UploadAvaliacao extends IntentService {
     private String urlBase = "http://52.67.12.155/submeter.php";
+
     /* É obrigatório ter um construtor */
     public UploadAvaliacao(){
-        super(UploadAvaliacao. class.getSimpleName());
+        super(UploadAvaliacao.class.getSimpleName());
     }
-    /* Este método é chamado disparar o serviço */
+
+    /***
+     * Este método é chamado disparar o serviço
+     * @param intent
+     */
     @Override
     protected void onHandleIntent(Intent intent) {
         ConnectivityManager connectivityManager = (ConnectivityManager)
                 getBaseContext(). getSystemService(Context. CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = null;
+        NetworkInfo networkInfo;
+
         if (connectivityManager != null) {
             networkInfo = connectivityManager.getActiveNetworkInfo();
             if(networkInfo != null && networkInfo.isConnected()) {
@@ -51,17 +57,24 @@ public class UploadAvaliacao extends IntentService {
             }
         }
     }
+
     private void submeter(){
- /* Obtém o IMEI (International Mobile Equipment Identity) do dispositivo */
+        /* Obtém o IMEI (International Mobile Equipment Identity) do dispositivo */
         TelephonyManager telephonyManager =
-                (TelephonyManager) getSystemService(Context. TELEPHONY_SERVICE);
-        String imei = telephonyManager.getDeviceId() ;
+                (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String imei = telephonyManager.getDeviceId();
+
+        // verifica se o imei foi recuperado com sucesso
         if( imei != null ) {
             Controlador controlador = new Controlador(getBaseContext());
             String lista = controlador.selecionarNaoEnviado();
+
+            // verifica se existem dados nao enviados ainda
             if( !lista.equals("") ) {
+                // caso existam dados a serem enviados, enviar para o bd
                 StringBuilder stringBuilder = null;
                 InputStream stream = null;
+
                 try {
                     URL url = new URL(urlBase + "?imei=" + imei + "&lista=" + lista);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -70,8 +83,9 @@ public class UploadAvaliacao extends IntentService {
                     conn.setRequestMethod("GET");
                     conn.setDoInput(true);
                     conn.connect();
+
                     stream = conn.getInputStream();
- /* Ler do fluxo de entrada (stream) e carregar no objeto stringBuilder */
+                    /* Ler do fluxo de entrada (stream) e carregar no objeto stringBuilder */
                     BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
                     stringBuilder = new StringBuilder();
                     String linha;
@@ -79,9 +93,9 @@ public class UploadAvaliacao extends IntentService {
                         stringBuilder.append(linha + "\n");
                     }
                     br.close();
-  /* Transforma de texto para JSON */
+                    /* Transforma de texto para JSON */
                     JSONObject json = new JSONObject(stringBuilder.toString());
- /* Verifica se existe mensagem de erro */
+                    /* Verifica se existe mensagem de erro */
                     if( json.getString("erro").equals("") ){
                         JSONArray datas = (JSONArray) json.get("lista");
                         for( int i = 0; i < datas.length(); i++ ){
@@ -89,20 +103,18 @@ public class UploadAvaliacao extends IntentService {
                         }
                     }
                 } catch (Exception e) {
-                    Log. e("AAA", e.getMessage());
+                    Log.e("AAA", e.getMessage());
                 } finally {
- /*tem de garantir que o InputStrem seja fechado*/
+                     /*tem de garantir que o InputStrem seja fechado*/
                     if (stream != null) {
                         try {
                             stream.close();
                         } catch (IOException e) {
-                            Log. e("AAA", e.getMessage());
+                            Log.e("AAA", e.getMessage());
                         }
                     }
                 }
             }
         }
     }
-
-
 }

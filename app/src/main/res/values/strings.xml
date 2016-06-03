@@ -8,7 +8,10 @@
     <string name="tvRegular">Regular</string>
     <string name="tvRuim">Ruim</string>
     <string name="tvPessimo">Péssimo</string>
-    <string name="act_principal_titulo2" />
+    <string name="etNascimento">Ano de nascimento</string>
+    <string name="rbFeminino">Feminino</string>
+    <string name="rbMasculino">Masculino</string>
+    <string name="rbOutro">Outro</string>
     <string name="act_titulo">Como você está hoje?</string>
     <string name="alerta_para_selecionar_avaliacao">Pressione e segure sua avaliação!</string>
     <string name="alerta_ja_selecionou_hoje">Obrigado! Te aguardamos amanhã!</string>

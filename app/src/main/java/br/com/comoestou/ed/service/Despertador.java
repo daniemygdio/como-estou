@@ -10,7 +10,7 @@ public class Despertador extends BroadcastReceiver {
     /* O método onReceive é chamado quando o objeto entra em execução */
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent intencao = new Intent(context, UploadAvaliacao. class);
+        Intent intencao = new Intent(context, UploadAvaliacao.class);
         context.startService(intencao);
     }
 }

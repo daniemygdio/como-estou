@@ -67,6 +67,7 @@ public class Controlador {
         Cursor cursor;
 
         bd = banco.getReadableDatabase();
+
         if (bd != null) {
             cursor = bd.rawQuery("select * from tbAvaliacao order by dataAvaliacao desc", null);
 

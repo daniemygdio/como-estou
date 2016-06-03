@@ -10,10 +10,12 @@ import android.util.Log;
 * SQLiteOpenHelper: classe responsável pela criação do BD e também responsável
 * pelo versionamento do mesmo. */
 public class Banco extends SQLiteOpenHelper {
+
     /* Nome do BD e a versão atual. A versão é usada para indicar
     * que o aplicativo não esteja usando tabelas com esquemas desatualizados */
     private static final String BD_NOME = "bdCadastro";
     private static final int VERSAO = 1;
+
     /* O BD é por aplicativo, por isso precisamos fornecer o Context */
     public Banco(Context context) {
         super(context, BD_NOME, null, VERSAO);
@@ -29,7 +31,14 @@ public class Banco extends SQLiteOpenHelper {
                 " latitude REAL NULL," +
                 " longitude REAL NULL)";
         bd.execSQL(sql);
+
+        String sql2 = "CREATE TABLE if not exists tbCadastro (" +
+                "imei text primary key, "+
+                "sexo text not null,"+
+                "ano integer not null )";
+        bd.execSQL(sql2);
     }
+
     /* Este método é chamado automaticamente a cada vez que a versão do BD é incrementada.
      Aqui estamos usando a VERSAO = 1, mas se quisermos chamar o método onUpgrade basta
     mudar a VERSAO para 2 ou mais.
@@ -38,6 +47,7 @@ public class Banco extends SQLiteOpenHelper {
     @Override public void onUpgrade(SQLiteDatabase bd, int oldVersion, int newVersion) {
         try {
             bd.execSQL("drop table if exists tbAvaliacao");
+            bd.execSQL("drop table if exists tbCadastro");
         } catch( SQLException e ){
             Log. e("ERRO", e.getMessage() );
         }
