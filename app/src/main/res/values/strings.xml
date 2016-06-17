@@ -12,7 +12,15 @@
     <string name="rbFeminino">Feminino</string>
     <string name="rbMasculino">Masculino</string>
     <string name="rbOutro">Outro</string>
+    <string name="btCadastrar">Enviar!</string>
     <string name="act_titulo">Como você está hoje?</string>
     <string name="alerta_para_selecionar_avaliacao">Pressione e segure sua avaliação!</string>
     <string name="alerta_ja_selecionou_hoje">Obrigado! Te aguardamos amanhã!</string>
+    <string name="agreadecimento">Obrigado! ;)</string>
+    <string-array name="spSexo">
+        <item>Feminino</item>
+        <item>Masculino</item>
+        <item>Outro</item>
+    </string-array>
+
 </resources>

@@ -22,13 +22,16 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import br.com.comoestou.ed.bd.ArquivoPreferencias;
 import br.com.comoestou.ed.bd.Controlador;
+import br.com.comoestou.ed.main.ActCadastro;
 
 /**
  * Created by Danielle Emygdio on 23/05/2016.
  */
 public class UploadAvaliacao extends IntentService {
-    private String urlBase = "http://52.67.12.155/submeter.php";
+    private String urlBaseAvaliacao = "http://52.67.12.155/submeterAvaliacao.php";
+
 
     /* É obrigatório ter um construtor */
     public UploadAvaliacao(){
@@ -48,7 +51,8 @@ public class UploadAvaliacao extends IntentService {
         if (connectivityManager != null) {
             networkInfo = connectivityManager.getActiveNetworkInfo();
             if(networkInfo != null && networkInfo.isConnected()) {
-                submeter();
+                submeterAvaliacao();
+
                 String caminho = Environment. getExternalStorageDirectory().getAbsolutePath()
                         + "/media/audio/notifications/facebook_ringtone_pop.m4a";
                 Ringtone ringtone = RingtoneManager. getRingtone(
@@ -58,11 +62,31 @@ public class UploadAvaliacao extends IntentService {
         }
     }
 
-    private void submeter(){
+    private boolean jaCadastrouDadosPessoais(String imeiRecuperado) {
+        ArquivoPreferencias.initializeInstance(getApplicationContext());
+        ArquivoPreferencias dadosPessoais = ArquivoPreferencias.getInstance();
+
+        Log.e("UploadAvaliacao", "imeir "+imeiRecuperado+" imei "+dadosPessoais.getImei());
+        if(dadosPessoais.getImei()!= null && imeiRecuperado != null && dadosPessoais.getImei().equals(imeiRecuperado)) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    private void submeterAvaliacao(){
         /* Obtém o IMEI (International Mobile Equipment Identity) do dispositivo */
         TelephonyManager telephonyManager =
                 (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String imei = telephonyManager.getDeviceId();
+
+        // VERIFICANDO O ARQUIVO DE PREFERENCIAS SE POSSUI DISPOSITIVO CADASTRADO
+        if((imei != null) && (!jaCadastrouDadosPessoais(imei))) {
+            Intent dialogIntent = new Intent(this, ActCadastro.class);
+            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(dialogIntent);
+        }
 
         // verifica se o imei foi recuperado com sucesso
         if( imei != null ) {
@@ -76,7 +100,7 @@ public class UploadAvaliacao extends IntentService {
                 InputStream stream = null;
 
                 try {
-                    URL url = new URL(urlBase + "?imei=" + imei + "&lista=" + lista);
+                    URL url = new URL(urlBaseAvaliacao + "?imei=" + imei + "&lista=" + lista);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setReadTimeout(10000); /* em milésimos de seg. */
                     conn.setConnectTimeout(15000);

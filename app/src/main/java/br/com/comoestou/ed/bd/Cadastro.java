@@ -6,7 +6,7 @@ package br.com.comoestou.ed.bd;
 public class Cadastro {
     private String imei;
     private String sexo;
-    private int ano;
+    private String ano;
 
     public String getImei() {
         return imei;
@@ -24,11 +24,11 @@ public class Cadastro {
         this.sexo = sexo;
     }
 
-    public int getAno() {
+    public String getAno() {
         return ano;
     }
 
-    public void setAno(int ano) {
+    public void setAno(String ano) {
         this.ano = ano;
     }
 }

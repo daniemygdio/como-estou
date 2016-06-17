@@ -237,7 +237,7 @@
         android:layout_height="match_parent"
         android:background="#3498DB">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/alerta_para_selecionar_avaliacao"

@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <!-- Permite a aplicação abrir sockets de rede -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -26,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".main.ActAvaliacao" />
-
+        <activity android:name=".main.ActCadastro"/>
         <!-- A classe UploadAvaliacao é do tipo IntentService e
         as classes IntentService precisam de uma marcação <service>.
          A propriedade android:exported = "false" indica que este
